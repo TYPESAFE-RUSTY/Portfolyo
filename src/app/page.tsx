@@ -1,95 +1,46 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import type { Metadata } from "next"
+import SideNav from "@/components/SideNav"
+import SideContent from "@/wrappers/SideContent"
+import Hero from "@/components/Hero"
+import About from "@/components/About"
+import Resume from "@/components/Resume"
+import Services from "@/components/Services"
+import Portfolio from "@/components/Portfolio"
+import Review from "@/components/Review"
+import Contact from "@/components/Contact"
+import Footer from "@/components/Footer"
+import { ApiResponse } from "@/utils/schema"
 
-export default function Home() {
+
+export const metadata: Metadata = {
+  title: "John doe",
+  description: "I develop 3D visuals, user interfaces and web applications",
+};
+
+
+export default async function page() {
+  let url = process.env.API
+
+  if (!url) return alert("Invalid Request")
+
+  let response: Response = await fetch(url, { cache: "force-cache" })
+  let Data: ApiResponse = await response.json()
+  let User = Data.user
+  let socials = User.social_handles
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    <>
+      <SideNav />
+      <SideContent>
+        <Hero name={User.about.name} socials={socials} />
+        <About data={User.about} email={User.email} />
+        <Resume skills={User.skills} />
+        <Services services={User.services} />
+        <Portfolio projects={User.projects} />
+        <Review testimonials={User.testimonials} />
+        <Contact />
+        <Footer socials={socials} />
+      </SideContent>
+    </>
+  )
 }
