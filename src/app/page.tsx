@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default async function page() {
   let url = process.env.API
 
-  if (!url) return alert("Invalid Request")
+  if (!url) return console.error("Invalid Request")
 
   let response: Response = await fetch(url, { cache: "force-cache" })
   let Data: ApiResponse = await response.json()
